@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+    <!-- arguments-->
+    <arg name="Supervisor_window_s"     		default="5.0" />
+    <arg name="max_norm_changes"                        default="1.0" />
+    <arg name="topic_to_supervise"                      default="/ov_msckf/poseimu" />
+
+    <!-- autonomy node -->
+    <node name="estimator_supervisor_posewithcovariancestamped" pkg="estimator_supervisor" type="estimator_supervisor" output="screen" clear_params="true" required="false">
+
+        <!-- topics and services -->
+        <param name="Supervisor_window_s"           type="double"   value="$(arg Supervisor_window_s)" />
+        <param name="max_norm_changes"              type="double"   value="$(arg max_norm_changes)" />
+        <param name="topic_to_supervise"            type="string"   value="$(arg topic_to_supervise)" />
+
+    </node>
+
+</launch>
