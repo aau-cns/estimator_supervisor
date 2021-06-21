@@ -45,22 +45,22 @@ message(STATUS "BOOST VERSION: " ${Boost_VERSION})
 ################################################
 
 ## Generate messages in the 'msg' folder
-add_message_files(
-  DIRECTORY msg
+#add_message_files(
+#  DIRECTORY msg
 #  FILES Message1.msg Message2.msg
-)
+#)
 
 ## Generate services in the 'srv' folder
-add_service_files(
-  DIRECTORY srv
+#add_service_files(
+#  DIRECTORY srv
 #  FILES Service1.srv Service2.srv
-)
+#)
 
 ## Generate actions in the 'action' folder
-add_action_files(
-  DIRECTORY act
+#add_action_files(
+#  DIRECTORY act
 #  FILES Action1.action Action2.action
-)
+#)
 
 ## Generate added messages and services with any dependencies listed here
 #generate_messages(
@@ -72,9 +72,9 @@ add_action_files(
 ################################################
 
 ## Generate dynamic reconfigure parameters in the 'cfg' folder
-generate_dynamic_reconfigure_options(
+#generate_dynamic_reconfigure_options(
 #  cfg/DynReconf1.cfg cfg/DynReconf2.cfg
-)
+#)
 
 ###################################
 ## catkin specific configuration ##
