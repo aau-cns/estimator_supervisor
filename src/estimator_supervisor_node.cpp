@@ -17,9 +17,6 @@
 #include <ros/ros.h>
 #include <string>
 
-// Callback functions
-void callback_posewithcovariancestamped(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& msg);
-
 // Main function
 int main(int argc, char** argv) {
 
@@ -28,6 +25,10 @@ int main(int argc, char** argv) {
   ros::NodeHandle nh("~");
 
   ROS_INFO("Starting the Estimator Supervisor");
+
+  // Start asynch (multi-threading) spinner
+  ros::AsyncSpinner spinner(0);
+  spinner.start();
 
   // Define parameters
   double window_s, max_norm;
@@ -50,13 +51,18 @@ int main(int argc, char** argv) {
     std::cout << std::endl;
     ROS_ERROR("No topic to supervise defined");
     std::exit(EXIT_FAILURE);
+  } else {
+    ROS_INFO("Supervising estimate from: %s", topic.c_str());
   }
 
   // Instanciate the supervisor
-  Supervisor(nh, window_s, max_norm, topic);
+  Supervisor Supervisor(nh, window_s, max_norm, topic);
 
-  // ROS Spin
-  ros::spin();
+  // Wait for shutdown
+  ros::waitForShutdown();
+
+  // Stop the spinner
+  spinner.stop();
 
   // Done!
   std::cout << std::endl;

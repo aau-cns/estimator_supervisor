@@ -27,8 +27,16 @@ Supervisor::Supervisor(ros::NodeHandle &nh, double &window, double &max_norm, st
 
 bool Supervisor::serviceHandler(std_srvs::Trigger::Request& , std_srvs::Trigger::Response& res) {
 
+  std::cout << YELLOW("Supervisor service called") << std::endl;
+
   // Subscribe to estimator and buffer data
   sub_pose_w_covariance_ = nh_.subscribe(topic_, 1, &Supervisor::estimateWithCovarianceCallback, this);
+
+  // Wait till the window gets filled by measurements
+  while (!buffer_full_) {
+    std::cout << YELLOW("Watining for filling the estimate buffer...") << std::endl;
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+  }
 
   // Define responce by calling estimator supervision
   res.success = estimatorSupervision();
@@ -38,11 +46,6 @@ bool Supervisor::serviceHandler(std_srvs::Trigger::Request& , std_srvs::Trigger:
 }
 
 bool Supervisor::estimatorSupervision() {
-
-  // Wait till the window gets filled by measurements
-  while (!buffer_full_) {
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
-  }
 
   // Compare the norm of  difference between the
   // first and last element of the buffer
