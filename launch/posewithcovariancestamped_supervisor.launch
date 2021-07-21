@@ -2,7 +2,7 @@
 <launch>
 
     <!-- arguments-->
-    <arg name="Supervisor_window_s"     		default="5.0" />
+    <arg name="Supervisor_window_s"     		default="10.0" />
     <arg name="max_norm_changes"                        default="1.0" />
     <arg name="topic_to_supervise"                      default="/ov_msckf/poseimu" />
 
