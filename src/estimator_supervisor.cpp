@@ -41,6 +41,13 @@ bool Supervisor::serviceHandler(std_srvs::Trigger::Request& , std_srvs::Trigger:
   // Define responce by calling estimator supervision
   res.success = estimatorSupervision();
 
+  // Clear buffer
+  position_buffer_.clear();
+  buffer_full_ = false;
+
+  // Unsubscribe to avoid filling the buffer
+  sub_pose_w_covariance_.shutdown();
+
   // Success
   return true;
 }
@@ -75,7 +82,7 @@ void Supervisor::estimateWithCovarianceCallback(const geometry_msgs::PoseWithCov
     buffer_full_ = true;
 
     // Since we check everytime a new measurement is added to the buffer it is
-    // be sufficient to simply remove the first element
+    // sufficient to simply remove the first element
     position_buffer_.erase(position_buffer_.begin());
   }
 }
