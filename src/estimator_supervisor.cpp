@@ -29,21 +29,21 @@ bool Supervisor::serviceHandler(std_srvs::Trigger::Request& , std_srvs::Trigger:
 
   std::cout << YELLOW("Supervisor service called") << std::endl;
 
+  // Clear buffer
+  position_buffer_.clear();
+  buffer_full_ = false;
+
   // Subscribe to estimator and buffer data
   sub_pose_w_covariance_ = nh_.subscribe(topic_, 1, &Supervisor::estimateWithCovarianceCallback, this);
 
   // Wait till the window gets filled by measurements
   while (!buffer_full_) {
-    std::cout << YELLOW("Watining for filling the estimate buffer...") << std::endl;
+    std::cout << YELLOW("Waiting for filling the estimate buffer...") << std::endl;
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
   }
 
   // Define responce by calling estimator supervision
   res.success = estimatorSupervision();
-
-  // Clear buffer
-  position_buffer_.clear();
-  buffer_full_ = false;
 
   // Unsubscribe to avoid filling the buffer
   sub_pose_w_covariance_.shutdown();
