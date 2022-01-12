@@ -5,6 +5,7 @@
     <arg name="Supervisor_window_s"     		default="10.0" />
     <arg name="max_norm_changes"                        default="1.0" />
     <arg name="topic_to_supervise"                      default="/ov_msckf/poseimu" />
+    <arg name="estiamte_msg_type"                       default="posestamped" /> <!-- posestamped, posewithcovariancestamped -->
 
     <!-- autonomy node -->
     <node name="estimator_supervisor_posewithcovariancestamped" pkg="estimator_supervisor" type="estimator_supervisor" output="screen" clear_params="true" required="false">
@@ -13,6 +14,7 @@
         <param name="Supervisor_window_s"           type="double"   value="$(arg Supervisor_window_s)" />
         <param name="max_norm_changes"              type="double"   value="$(arg max_norm_changes)" />
         <param name="topic_to_supervise"            type="string"   value="$(arg topic_to_supervise)" />
+        <param name="estiamte_msg_type"             type="string"   value="$(arg estiamte_msg_type)" />
 
     </node>
 

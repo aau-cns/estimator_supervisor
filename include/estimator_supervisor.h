@@ -20,6 +20,7 @@
 #include <ros/ros.h>
 #include <std_srvs/Trigger.h>
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
+#include <geometry_msgs/PoseStamped.h>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -38,8 +39,10 @@ class Supervisor {
      * @param Ros NodeHandle
      * @param Ros Time window
      * @param Ros maximun norm to accept changes as non diverging estimator
+     * @param Topic to supervise
+     * @param Message type
      */
-    Supervisor(ros::NodeHandle &nh, double &window, double &max_norm, std::string &topic);
+    Supervisor(ros::NodeHandle &nh, double &window, double &max_norm, std::string &topic, std::string &msg_type);
 
   private:
 
@@ -48,6 +51,12 @@ class Supervisor {
      * @param constant pointer to the message
      */
     void estimateWithCovarianceCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& msg);
+
+    /**
+     * @brief Estimate with covariance callback
+     * @param constant pointer to the message
+     */
+    void estimateCallback(const geometry_msgs::PoseStamped::ConstPtr& msg);
 
     /**
      * @brief Service handler (handle the request of supervision)
@@ -67,7 +76,7 @@ class Supervisor {
     ros::NodeHandle nh_;
 
     /// Subscribers
-    ros::Subscriber sub_pose_w_covariance_;
+    ros::Subscriber sub_estimate_;
 
     /// Supervisor service
     ros::ServiceServer srv_;
@@ -80,6 +89,9 @@ class Supervisor {
 
     /// Topic where state estimation is published
     std::string topic_;
+
+    /// Message type
+    std::string msg_type_;
 
     /// Define vector of position measurement
     std::vector<Buffer::positionBuffer> position_buffer_;

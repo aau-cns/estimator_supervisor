@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
 
   // Define parameters
   double window_s, max_norm;
-  std::string topic;
+  std::string topic, msg_type;
 
   // Parse parameters
   if(!nh.getParam("Supervisor_window_s", window_s)) {
@@ -55,8 +55,16 @@ int main(int argc, char** argv) {
     ROS_INFO("Supervising estimate from: %s", topic.c_str());
   }
 
+  if(!nh.getParam("estiamte_msg_type", msg_type)) {
+    std::cout << std::endl;
+    ROS_ERROR("No message type for topic to supervised defined");
+    std::exit(EXIT_FAILURE);
+  } else {
+    ROS_INFO("Supervising estimate with message type: %s", topic.c_str());
+  }
+
   // Instanciate the supervisor
-  Supervisor Supervisor(nh, window_s, max_norm, topic);
+  Supervisor Supervisor(nh, window_s, max_norm, topic, msg_type);
 
   // Wait for shutdown
   ros::waitForShutdown();

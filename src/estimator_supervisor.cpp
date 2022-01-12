@@ -17,8 +17,8 @@
 #include "estimator_supervisor.h"
 #include "utils/colors.h"
 
-Supervisor::Supervisor(ros::NodeHandle &nh, double &window, double &max_norm, std::string &topic) :
-  nh_(nh), window_(window), max_norm_(max_norm), topic_(topic) {
+Supervisor::Supervisor(ros::NodeHandle &nh, double &window, double &max_norm, std::string &topic, std::string &msg_type) :
+  nh_(nh), window_(window), max_norm_(max_norm), topic_(topic), msg_type_(msg_type){
 
   // Advertise supervisor service
   srv_ = nh_.advertiseService("service/supervision", &Supervisor::serviceHandler, this);
@@ -34,7 +34,11 @@ bool Supervisor::serviceHandler(std_srvs::Trigger::Request& , std_srvs::Trigger:
   buffer_full_ = false;
 
   // Subscribe to estimator and buffer data
-  sub_pose_w_covariance_ = nh_.subscribe(topic_, 1, &Supervisor::estimateWithCovarianceCallback, this);
+  if (msg_type_ == "posestamped") {
+    sub_estimate_ = nh_.subscribe(topic_, 1, &Supervisor::estimateCallback, this);
+  } else if (msg_type_ == "posewithcovariancestamped") {
+    sub_estimate_ = nh_.subscribe(topic_, 1, &Supervisor::estimateWithCovarianceCallback, this);
+  }
 
   // Wait till the window gets filled by measurements
   while (!buffer_full_) {
@@ -46,7 +50,7 @@ bool Supervisor::serviceHandler(std_srvs::Trigger::Request& , std_srvs::Trigger:
   res.success = estimatorSupervision();
 
   // Unsubscribe to avoid filling the buffer
-  sub_pose_w_covariance_.shutdown();
+  sub_estimate_.shutdown();
 
   // Success
   return true;
@@ -71,6 +75,30 @@ void Supervisor::estimateWithCovarianceCallback(const geometry_msgs::PoseWithCov
   // Parse message to defined data structure
   data.timestamp = msg->header.stamp.toSec();
   data.p << msg->pose.pose.position.x, msg->pose.pose.position.y, msg->pose.pose.position.z;
+
+  // Push data into buffer
+  position_buffer_.emplace_back(data);
+
+  // Remove oldest if sensor reading window width is reached
+  if ((data.timestamp - position_buffer_.begin()->timestamp) > window_) {
+
+    // Set reached window flag
+    buffer_full_ = true;
+
+    // Since we check everytime a new measurement is added to the buffer it is
+    // sufficient to simply remove the first element
+    position_buffer_.erase(position_buffer_.begin());
+  }
+}
+
+void Supervisor::estimateCallback(const geometry_msgs::PoseStamped::ConstPtr& msg) {
+
+  // Define local data structure
+  Buffer::positionBuffer data;
+
+  // Parse message to defined data structure
+  data.timestamp = msg->header.stamp.toSec();
+  data.p << msg->pose.position.x, msg->pose.position.y, msg->pose.position.z;
 
   // Push data into buffer
   position_buffer_.emplace_back(data);
