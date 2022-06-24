@@ -18,7 +18,7 @@
 #include <string>
 
 // Main function
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
 
   // Launch ros node
   ros::init(argc, argv, "estimator_supervisor");
@@ -35,19 +35,19 @@ int main(int argc, char** argv) {
   std::string topic, msg_type;
 
   // Parse parameters
-  if(!nh.getParam("Supervisor_window_s", window_s)) {
+  if (!nh.getParam("Supervisor_window_s", window_s)) {
     std::cout << std::endl;
     ROS_ERROR("No Supervisor window defined");
     std::exit(EXIT_FAILURE);
   }
 
-  if(!nh.getParam("max_norm_changes", max_norm)) {
+  if (!nh.getParam("max_norm_changes", max_norm)) {
     std::cout << std::endl;
     ROS_ERROR("No Maximum norm for changes after initialization defined");
     std::exit(EXIT_FAILURE);
   }
 
-  if(!nh.getParam("topic_to_supervise", topic)) {
+  if (!nh.getParam("topic_to_supervise", topic)) {
     std::cout << std::endl;
     ROS_ERROR("No topic to supervise defined");
     std::exit(EXIT_FAILURE);
@@ -55,7 +55,7 @@ int main(int argc, char** argv) {
     ROS_INFO("Supervising estimate from: %s", topic.c_str());
   }
 
-  if(!nh.getParam("estiamte_msg_type", msg_type)) {
+  if (!nh.getParam("estiamte_msg_type", msg_type)) {
     std::cout << std::endl;
     ROS_ERROR("No message type for topic to supervised defined");
     std::exit(EXIT_FAILURE);
@@ -76,5 +76,4 @@ int main(int argc, char** argv) {
   std::cout << std::endl;
   ROS_INFO("Done!");
   return EXIT_SUCCESS;
-
 }

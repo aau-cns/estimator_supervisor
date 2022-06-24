@@ -1,8 +1,7 @@
-// Copyright (C) 2021 Christian Brommer and Alessandro Fornasier,
+// Copyright (C) 2021 Alessandro Fornasier,
 // Control of Networked Systems, Universitaet Klagenfurt, Austria
 //
-// You can contact the author at <christian.brommer@ieee.org>
-// and <alessandro.fornasier@ieee.org>
+// You can contact the author <alessandro.fornasier@ieee.org>
 //
 // All rights reserved.
 //
@@ -17,17 +16,16 @@
 #ifndef _COLORS_
 #define _COLORS_
 
-#define RESET              "\033[0m"
-#define BLACK_ESCAPE       "\033[30m"
-#define RED_ESCAPE         "\033[31m"
-#define GREEN_ESCAPE       "\033[32m"
-#define YELLOW_ESCAPE      "\033[33m"
-#define BLUE_ESCAPE        "\033[34m"
-#define MAGENTA_ESCAPE     "\033[35m"
-#define CYAN_ESCAPE        "\033[36m"
-#define WHITE_ESCAPE       "\033[37m"
-#define REDPURPLE_ESCAPE   "\033[95m"
-
+#define RESET "\033[0m"
+#define BLACK_ESCAPE "\033[30m"
+#define RED_ESCAPE "\033[31m"
+#define GREEN_ESCAPE "\033[32m"
+#define YELLOW_ESCAPE "\033[33m"
+#define BLUE_ESCAPE "\033[34m"
+#define MAGENTA_ESCAPE "\033[35m"
+#define CYAN_ESCAPE "\033[36m"
+#define WHITE_ESCAPE "\033[37m"
+#define REDPURPLE_ESCAPE "\033[95m"
 
 #define BLACK(x) BLACK_ESCAPE x RESET
 #define RED(x) RED_ESCAPE x RESET
@@ -42,4 +40,4 @@
 #define BOLD(x) "\x1B[1m" x RESET
 #define UNDERLINE(x) "\x1B[4m" x RESET
 
-#endif  /* _COLORS_ */
+#endif /* _COLORS_ */
