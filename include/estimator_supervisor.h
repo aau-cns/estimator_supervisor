@@ -1,36 +1,33 @@
 // Copyright (C) 2021 Alessandro Fornasier,
-// Control of Networked Systems, Universitaet Klagenfurt, Austria
-//
-// You can contact the author at <alessandro.fornasier@ieee.org>
+// Control of Networked Systems, University of Klagenfurt, Austria.
 //
 // All rights reserved.
 //
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-// DEALINGS IN THE SOFTWARE.
+// This software is licensed under the terms of the BSD-2-Clause-License with
+// no commercial use allowed, the full terms of which are made available
+// in the LICENSE file. No license in patents is granted.
+//
+// You can contact the author at <alessandro.fornasier@ieee.org>
 
 #ifndef SUPERVISOR_H
 #define SUPERVISOR_H
 
-#include <Eigen/Eigen>
-#include <chrono>
 #include <geometry_msgs/PoseStamped.h>
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
-#include <iostream>
 #include <ros/ros.h>
 #include <std_srvs/Trigger.h>
+#include <Eigen/Eigen>
+#include <atomic>
+#include <chrono>
+#include <iostream>
 #include <string>
 #include <thread>
 #include <vector>
 
 #include "utils/buffer.h"
 
-class Supervisor {
-
+class Supervisor
+{
 public:
   /**
    * @brief Autonomy constructor
@@ -40,30 +37,48 @@ public:
    * @param Topic to supervise
    * @param Message type
    */
-  Supervisor(ros::NodeHandle &nh, double &window, double &max_norm,
-             std::string &topic, std::string &msg_type);
+  Supervisor(ros::NodeHandle& nh, double& window, double& max_norm, std::string& topic, std::string& msg_type);
 
 private:
   /**
    * @brief Estimate with covariance callback
    * @param constant pointer to the message
    */
-  void estimateWithCovarianceCallback(
-      const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &msg);
+  void estimateWithCovarianceCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& msg);
 
   /**
    * @brief Estimate with covariance callback
    * @param constant pointer to the message
    */
-  void estimateCallback(const geometry_msgs::PoseStamped::ConstPtr &msg);
+  void estimateCallback(const geometry_msgs::PoseStamped::ConstPtr& msg);
+
+  /**
+   * @brief fillPositionBuffer
+   * @param data
+   */
+  inline void fillPositionBuffer(const Buffer::positionBuffer& data)
+  {
+    // Push data into buffer
+    position_buffer_.emplace_back(data);
+
+    // Remove oldest if sensor reading window width is reached
+    if ((data.timestamp - position_buffer_.front().timestamp) > window_)
+    {
+      // Set reached window flag
+      buffer_full_ = true;
+
+      // Since we check everytime a new measurement is added to the buffer it is
+      // sufficient to simply remove the first element
+      position_buffer_.erase(position_buffer_.begin());
+    }
+  }
 
   /**
    * @brief Service handler (handle the request of supervision)
    * @param Request
    * @param Responce
    */
-  bool serviceHandler(std_srvs::Trigger::Request &req,
-                      std_srvs::Trigger::Response &res);
+  bool serviceHandler(std_srvs::Trigger::Request& req, std_srvs::Trigger::Response& res);
 
   /**
    * @brief Estimator supervision
@@ -97,7 +112,7 @@ private:
   std::vector<Buffer::positionBuffer> position_buffer_;
 
   /// Boolean flag when buffer is full
-  bool buffer_full_ = false;
+  std::atomic<bool> buffer_full_ = false;
 };
 
-#endif // SUPERVISOR_H
+#endif  // SUPERVISOR_H

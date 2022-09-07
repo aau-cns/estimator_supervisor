@@ -8,7 +8,7 @@
     <arg name="estiamte_msg_type"                       default="posestamped" /> <!-- posestamped, posewithcovariancestamped -->
 
     <!-- autonomy node -->
-    <node name="estimator_supervisor_posewithcovariancestamped" pkg="estimator_supervisor" type="estimator_supervisor" output="screen" clear_params="true" required="false">
+    <node name="estimator_supervisor" pkg="estimator_supervisor" type="estimator_supervisor" output="screen" clear_params="true" required="false">
 
         <!-- topics and services -->
         <param name="Supervisor_window_s"           type="double"   value="$(arg Supervisor_window_s)" />
