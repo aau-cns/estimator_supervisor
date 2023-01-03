@@ -31,7 +31,7 @@ int main(int argc, char** argv)
   std::string topic, msg_type;
 
   // Parse parameters
-  if (!nh.getParam("Supervisor_window_s", window_s))
+  if (!nh.getParam("supervisor_window_s", window_s))
   {
     std::cout << std::endl;
     ROS_ERROR("No Supervisor window defined");

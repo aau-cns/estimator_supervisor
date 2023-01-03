@@ -60,8 +60,8 @@ This node uses the following parameters that can be set in any launch file.
 
 | ROS parameter | description | required |
 |:-------------:|:-----------:|:-------------:|
-| `Supervisor_window_s` | time to supervise estimates in s | yes |
-| `max_norm_changes`    | maximum norm change allowed for successful pass in position | yes |
+| `supervisor_window_s` | time to supervise estimates in s | yes |
+| `max_norm_changes`    | maximum norm change allowed for successful pass in position in meter | yes |
 | `topic_to_supervise`  | ROS topic used for supervision | yes |
 | `estiamte_msg_type`   | ROS type of message used (available: `posestamped` or `posewithcovariancestamped`) | yes |
 
@@ -71,37 +71,34 @@ These are the same as the ROS parameters, so only their default value is given.
 
 | Launch parameter | default value                  |
 |:----------------:|:------------------------------:|
-| `Supervisor_window_s` | `10.0` |
+| `supervisor_window_s` | `10.0` |
 | `max_norm_changes`    | `1.0` |
 | `topic_to_supervise`  | `/ov_msckf/poseimu` |
 | `estiamte_msg_type`   | `posestamped` |
 
 ## Architecture
 
-Please refer to the academic paper for further insights of the Data Recorder.
+Please refer to the academic paper for further insights of the Estimator Supervisor.
 
 ## Package Layout
 
 ```console
-/path/to/data_recorder$ tree -L 3 --noreport --charset unicode
+/path/to/estimator_supervisor$ tree -L 3 --noreport --charset unicode
 .
 |-- CMakeLists.txt
+|-- include
+|   |-- estimator_supervisor.h
+|   `-- utils
+|       |-- buffer.h
+|       `-- colors.h
 |-- launch
-|   `-- recorder.launch
+|   `-- supervisor.launch
 |-- LICENSE
-|-- nodes
-|   `-- DataRecorderNode.py
 |-- package.xml
 |-- README.md
-|-- scripts
-|   |-- record.sh
-|   |-- stop_record.sh
-|   `-- store.sh
-|-- setup.py
 `-- src
-    `-- data_recorder
-        |-- data_recorder.py
-        `-- __init__.py
+    |-- estimator_supervisor.cpp
+    `-- estimator_supervisor_node.cpp
 ```
 
 ---
